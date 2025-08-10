@@ -1,0 +1,39 @@
+/* Base styles for all navigation buttons */
+.nav-button {
+  /* Basic appearance */
+  padding: 12px 24px;
+  background-color: #8b7355; /* Default "inactive" color */
+  color: #e0dccc; /* A slightly softer white for inactive text */
+  border: none;
+  border-bottom: 3px solid transparent; /* A transparent border to prevent layout shift on hover/active */
+  border-radius: 6px;
+  
+  /* Font and text */
+  font-family: "Geist Mono Variable", monospace;
+  font-size: 15px;
+  text-transform: lowercase;
+  
+  /* Other properties */
+  cursor: pointer;
+  outline: none; /* Removes the default browser outline on focus */
+
+  /* The magic for smooth animations! */
+  transition: all 0.2s ease-in-out;
+}
+
+/* Styles for when the mouse is hovering over the button */
+.nav-button:hover {
+  background-color: #6b5d47; /* The darker "active" color */
+  color: #faf9f6; /* Bright white text on hover */
+  transform: translateY(-2px); /* Lifts the button slightly */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Styles for the currently active button */
+.nav-button.active {
+  background-color: #6b5d47; /* The darker color */
+  color: #faf9f6; /* Bright white text for active */
+  border-bottom-color: #faf9f6; /* The underline effect */
+  box-shadow: none; /* Remove shadow for active state to make it look "pressed" */
+  transform: translateY(0);
+}

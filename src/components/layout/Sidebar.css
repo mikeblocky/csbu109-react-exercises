@@ -1,0 +1,54 @@
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  width: 240px; /* Fixed width for the sidebar */
+  min-height: 100vh; /* Make it full height */
+  background-color: #2d2d2d;
+  color: #faf9f6;
+  padding: 20px;
+  border-right: 1px solid #444;
+  flex-shrink: 0; /* Prevents the sidebar from shrinking */
+}
+
+.sidebar-header {
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #444;
+  text-align: center;
+}
+
+.sidebar-title {
+  margin: 0;
+  font-weight: 500; /* Use a number for Geist's variable font */
+  font-size: 1.5rem;
+  letter-spacing: 1px;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* We need to adjust our NavButton for a vertical layout */
+.sidebar-nav .nav-button {
+  width: 100%;
+  text-align: left;
+  padding-left: 20px;
+  border-bottom: none; /* Remove bottom border */
+  border-left: 4px solid transparent; /* Add a left border for the active state */
+  border-radius: 6px;
+}
+
+.sidebar-nav .nav-button.active {
+  border-bottom-color: transparent; /* Ensure bottom border is off for active */
+  border-left-color: #faf9f6; /* Use left border for active state */
+  transform: none; /* No need for transform in sidebar */
+  box-shadow: none;
+}
+
+.sidebar-nav .nav-button:hover {
+  transform: none; /* No need for transform in sidebar */
+  box-shadow: none;
+  background-color: #4a4a4a; /* A different hover for the sidebar */
+}

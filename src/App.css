@@ -36,3 +36,37 @@
     transform: rotate(360deg);
   }
 }
+
+
+/* File: src/App.css */
+
+/* Keep any other existing styles you might have */
+
+/* Styles for the main navigation bar container */
+.app-nav {
+  background-color: #2d2d2d;
+  padding: 1.25rem; /* A little more vertical space */
+  border-bottom: 1px solid #444; /* A subtle line to separate nav from content */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+.app-nav-container {
+  display: flex;
+  justify-content: center;
+  gap: 15px; /* Slightly less gap */
+  flex-wrap: wrap;
+}
+
+/* File: src/App.css (Updated) */
+
+.app-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: #faf9f6; /* This is our main content background */
+}
+
+.content-pane {
+  flex-grow: 1; /* Allows the content area to take up the remaining space */
+  height: 100vh;
+  overflow-y: auto; /* Makes only the content area scrollable */
+}
