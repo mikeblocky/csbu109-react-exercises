@@ -1,80 +1,66 @@
+// src/components/UserProfile.js
 import React, { useEffect, useState } from 'react';
 
-function normalizeUrl(site) {
-  if (!site) return '#';
-  return site.startsWith('http://') || site.startsWith('https://')
-    ? site
-    : `https://${site}`;
-}
+const normalizeUrl = (site) =>
+  !site ? '#' : /^(https?:)?\/\//i.test(site) ? site : `https://${site}`;
 
 export default function UserProfile() {
-  const [user, setUser] = useState(null);
+  const [user, setUser]   = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  async function load(signal) {
-    try {
-      setLoading(true);
-      setError(null);
-
-      const res = await fetch('https://jsonplaceholder.typicode.com/users/1', { signal });
-      if (!res.ok) {
-        throw new Error(`request failed: ${res.status} ${res.statusText}`);
-      }
-      const data = await res.json();
-      setUser(data);
-    } catch (err) {
-      // Ignore aborts, surface other errors
-      if (err.name !== 'AbortError') setError(err.message || 'unknown error');
-    } finally {
-      setLoading(false);
-    }
-  }
-
+  // fetch on mount with cleanup
   useEffect(() => {
     const controller = new AbortController();
-    load(controller.signal);
-    return () => controller.abort(); // cleanup on unmount
+
+    (async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const res = await fetch(
+          'https://jsonplaceholder.typicode.com/users/1',
+          { signal: controller.signal }
+        );
+        if (!res.ok) throw new Error(`request failed: ${res.status} ${res.statusText}`);
+        setUser(await res.json());
+      } catch (err) {
+        if (err.name !== 'AbortError') setError(err.message || 'unknown error');
+      } finally {
+        setLoading(false);
+      }
+    })();
+
+    return () => controller.abort();
   }, []);
+
+  const retry = () => {
+    setUser(null);
+    setError(null);
+    setLoading(true);
+  };
 
   return (
     <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '16px',
-      padding: '40px',
-      fontFamily: '"Geist Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace',
-      backgroundColor: 'var(--surface)',
-      border: '1px solid var(--border)',
-      borderRadius: '8px',
-      maxWidth: '480px',
-      margin: '0 auto',
-      color: 'var(--text)',
-      textTransform: 'lowercase'
+      display:'flex', flexDirection:'column', gap:16, padding:40,
+      fontFamily:'"Geist Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace',
+      background:'var(--surface)', border:'1px solid var(--border)', borderRadius:8,
+      maxWidth:480, margin:'0 auto', color:'var(--text)', textTransform:'lowercase'
     }}>
-      <h2 style={{ margin: 0, fontWeight: 'normal' }}>user profile</h2>
+      <h2 style={{ margin:0, fontWeight:'normal' }}>user profile</h2>
 
-      {/* loading */}
       {loading && (
-        <div style={{ color: 'var(--subtext)' }}>loading…</div>
+        <div aria-live="polite" style={{ color:'var(--subtext)' }}>loading…</div>
       )}
 
-      {/* error */}
       {!loading && error && (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-          <div style={{ color: 'var(--danger)' }}>error: {error}</div>
+        <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
+          <div style={{ color:'var(--danger)' }}>error: {error}</div>
           <button
-            onClick={() => load()}
+            onClick={() => window.location.reload()} // or implement retry() as noted above
             style={{
-              width: 'fit-content',
-              backgroundColor: 'var(--primary)',
-              color: 'var(--surface)',
-              border: '1px solid var(--primary-border)',
-              borderRadius: '4px',
-              padding: '8px 16px',
-              fontFamily: '"Geist Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace',
-              fontSize: '14px',
-              cursor: 'pointer',
+              width:'fit-content', background:'var(--primary)', color:'var(--primary-text)',
+              border:'1px solid var(--primary-border)', borderRadius:4, padding:'8px 16px',
+              fontSize:14, cursor:'pointer', textTransform:'lowercase'
             }}
           >
             try again
@@ -82,18 +68,22 @@ export default function UserProfile() {
         </div>
       )}
 
-      {/* content */}
       {!loading && !error && user && (
-        <div style={{ display: 'grid', rowGap: 8 }}>
-          <div><strong style={{ fontWeight: 500 }}>name:</strong> {user.name}</div>
-          <div><strong style={{ fontWeight: 500 }}>email:</strong> {user.email}</div>
+        <div style={{ display:'grid', rowGap:8 }}>
+          <div><strong style={{ fontWeight:500 }}>name:</strong> {user.name}</div>
           <div>
-            <strong style={{ fontWeight: 500 }}>website:</strong>{' '}
+            <strong style={{ fontWeight:500 }}>email:</strong>{' '}
+            <a href={`mailto:${user.email}`} style={{ color:'var(--primary)' }}>
+              {user.email}
+            </a>
+          </div>
+          <div>
+            <strong style={{ fontWeight:500 }}>website:</strong>{' '}
             <a
               href={normalizeUrl(user.website)}
               target="_blank"
-              rel="noreferrer"
-              style={{ color: 'var(--primary-border)' }}
+              rel="noopener noreferrer"
+              style={{ color:'var(--primary)' }}
             >
               {user.website}
             </a>

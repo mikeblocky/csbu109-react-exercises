@@ -9,9 +9,12 @@ export default function ThemeProvider({ children }) {
 
   useEffect(() => {
     localStorage.setItem('theme', themeName);
-    // keep body colors in sync so backgrounds outside React also match
-    document.body.style.backgroundColor = themes[themeName].bg;
-    document.body.style.color = themes[themeName].text;
+    // This is the key line: drives :root[data-theme="..."] in index.css
+    document.documentElement.setAttribute('data-theme', themeName);
+
+    // Optional: you can drop these two—CSS already sets body colors via vars
+    // document.body.style.backgroundColor = themes[themeName].bg;
+    // document.body.style.color = themes[themeName].text;
   }, [themeName]);
 
   const value = useMemo(() => ({

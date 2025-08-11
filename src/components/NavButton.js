@@ -1,20 +1,29 @@
-// File: src/components/NavButton.js (Updated)
-
+// File: src/components/NavButton.js
 import React from 'react';
-import './NavButton.css'; // <-- Import the CSS file
+import { motion } from 'framer-motion';
+import './NavButton.css';
 
-// The component function itself doesn't need to change its props
 function NavButton({ children, onClick, isActive }) {
-
-  // We construct the className string based on the isActive prop.
-  // If active, it will be "nav-button active".
-  // If not, it will just be "nav-button".
-  const className = `nav-button ${isActive ? 'active' : ''}`;
+  // a11y hint for the current page/section
+  const ariaCurrent = isActive ? 'page' : undefined;
 
   return (
-    // We now use the 'className' attribute instead of the 'style' attribute.
-    <button onClick={onClick} className={className}>
-      {children}
+    <button
+      type="button"
+      onClick={onClick}
+      className={`nav-button ${isActive ? 'active' : ''}`}
+      aria-current={ariaCurrent}
+    >
+      {/* animated background that moves between active buttons */}
+      {isActive && (
+        <motion.span
+          layoutId="nav-active-pill"
+          className="nav-pill"
+          transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+        />
+      )}
+
+      <span className="nav-label">{children}</span>
     </button>
   );
 }

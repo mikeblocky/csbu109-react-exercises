@@ -42,19 +42,50 @@
 
 /* Keep any other existing styles you might have */
 
-/* Styles for the main navigation bar container */
+/* File: src/App.css (add or update these rules) */
+
 .app-nav {
-  background-color: #2d2d2d;
-  padding: 1.25rem; /* A little more vertical space */
-  border-bottom: 1px solid #444; /* A subtle line to separate nav from content */
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  /* soft translucent background + blur */
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: blur(8px) saturate(1.1);
+  border-bottom: 1px solid var(--border);
+  box-shadow: var(--shadow, 0 8px 22px rgba(0,0,0,0.12));
 }
 
-.app-nav-container {
+.app-nav .app-nav-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 8px 12px;
+
   display: flex;
-  justify-content: center;
-  gap: 15px; /* Slightly less gap */
-  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+
+  /* allow horizontal scroll on tiny screens */
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+/* hide scrollbar track in WebKit for a cleaner look */
+.app-nav .app-nav-container::-webkit-scrollbar {
+  height: 8px;
+}
+.app-nav .app-nav-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+.app-nav .app-nav-container::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--border) 70%, transparent);
+  border-radius: 999px;
+}
+
+/* optional: group of buttons looks more cohesive */
+.app-nav .app-nav-container .nav-button {
+  /* make adjacent pills look like a set */
+  border-radius: 10px;
 }
 
 /* File: src/App.css (Updated) */

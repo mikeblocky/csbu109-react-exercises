@@ -1,39 +1,67 @@
-/* Base styles for all navigation buttons */
+/* File: src/components/NavButton.css */
+
+/* Button reset + base */
 .nav-button {
-  /* Basic appearance */
-  padding: 12px 24px;
-  background-color: #8b7355; /* Default "inactive" color */
-  color: #e0dccc; /* A slightly softer white for inactive text */
-  border: none;
-  border-bottom: 3px solid transparent; /* A transparent border to prevent layout shift on hover/active */
-  border-radius: 6px;
-  
-  /* Font and text */
-  font-family: "Geist Mono Variable", monospace;
-  font-size: 15px;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 10px 14px;
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+
+  font-family: "Geist Mono Variable", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace;
+  font-size: 14px;
   text-transform: lowercase;
-  
-  /* Other properties */
+  line-height: 1;
+
   cursor: pointer;
-  outline: none; /* Removes the default browser outline on focus */
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
 
-  /* The magic for smooth animations! */
-  transition: all 0.2s ease-in-out;
+  transition: transform 140ms ease, border-color 140ms ease, background-color 140ms ease, color 140ms ease, box-shadow 140ms ease;
 }
 
-/* Styles for when the mouse is hovering over the button */
+/* Keep label above animated pill */
+.nav-label { position: relative; z-index: 1; }
+
+/* Hover: slight lift + subtle tint */
 .nav-button:hover {
-  background-color: #6b5d47; /* The darker "active" color */
-  color: #faf9f6; /* Bright white text on hover */
-  transform: translateY(-2px); /* Lifts the button slightly */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transform: translateY(-1px);
+  background: color-mix(in srgb, var(--primary) 8%, transparent);
+  border-color: color-mix(in srgb, var(--primary) 35%, var(--border));
 }
 
-/* Styles for the currently active button */
-.nav-button.active {
-  background-color: #6b5d47; /* The darker color */
-  color: #faf9f6; /* Bright white text for active */
-  border-bottom-color: #faf9f6; /* The underline effect */
-  box-shadow: none; /* Remove shadow for active state to make it look "pressed" */
+/* Active (mouse down) */
+.nav-button:active {
   transform: translateY(0);
+}
+
+/* Keyboard focus (accessible) */
+.nav-button:focus-visible {
+  outline: 2px solid var(--focus, #7c5cff);
+  outline-offset: 2px;
+}
+
+/* Animated pill (appears under active button) */
+.nav-pill {
+  position: absolute;
+  inset: -2px;
+  border-radius: 10px;
+  background: var(--primary);
+  box-shadow: 0 8px 26px color-mix(in srgb, var(--primary) 28%, transparent);
+  z-index: 0;
+}
+
+/* When active, make text readable on the pill */
+.nav-button.active .nav-label {
+  color: var(--primary-text);
+}
+
+/* Small screens: make buttons comfy in a row */
+@media (max-width: 640px) {
+  .nav-button { padding: 10px 12px; font-size: 13px; }
 }

@@ -1,110 +1,61 @@
 // src/components/Counter.js
-import { useTheme } from '../context/ThemeContext';
 import React, { useState } from 'react';
 
 function Counter() {
   const [count, setCount] = useState(0);
-  const { theme } = useTheme();
 
-  const increment = () => {
-    setCount(count + 1);
+  const container = {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: 20,
+    padding: 40,
+    fontFamily:
+      '"Geist Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace',
+    backgroundColor: 'var(--surface)',
+    border: '1px solid var(--border)',
+    borderRadius: 8,
+    maxWidth: 400,
+    margin: '0 auto',
   };
 
-  const decrement = () => {
-    setCount(count - 1);
+  const display = {
+    fontSize: '3rem',
+    fontWeight: 'normal',
+    color: 'var(--text)',
   };
 
-  const reset = () => {
-    setCount(0);
-  };
+  const row = { display: 'flex', gap: 10 };
+
+  const btn = (variant = 'primary') => ({
+    backgroundColor:
+      variant === 'secondary' ? 'var(--primary-border)' : 'var(--primary)',
+    color: 'var(--primary-text)',
+    border: '1px solid var(--primary-border)',
+    borderRadius: 4,
+    padding: '8px 16px',
+    fontSize: 14,
+    cursor: 'pointer',
+    textTransform: 'lowercase',
+  });
 
   return (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      gap: '20px',
-      padding: '40px',
-      fontFamily: '"Geist Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace',
-      backgroundColor: 'var(--surface)',
-      border: '1px solid var(--border)',
-      borderRadius: '8px',
-      maxWidth: '400px',
-      margin: '0 auto'
-    }}>
-      {/* Counter Display */}
-      <div style={{
-        fontSize: '3rem',
-        fontWeight: 'normal',
-        color: 'var(--text)',
-        fontFamily: '"Geist Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace'
-      }}>
-        count: {count}
-      </div>
+    <div style={container}>
+      <div style={display}>count: {count}</div>
 
-      {/* Buttons */}
-      <div style={{
-        display: 'flex',
-        gap: '10px'
-      }}>
-        <button
-          onClick={increment}
-          style={{
-            backgroundColor: 'var(--primary)',
-            color: 'var(--surface)',
-            border: '1px solid var(--primary-border)',
-            borderRadius: '4px',
-            padding: '8px 16px',
-            fontFamily: '"Geist Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace',
-            fontSize: '14px',
-            cursor: 'pointer',
-            textTransform: 'lowercase'
-          }}
-        >
+      <div style={row}>
+        <button onClick={() => setCount(c => c + 1)} style={btn()}>
           +1
         </button>
-
-        <button
-          onClick={decrement}
-          style={{
-            backgroundColor: 'var(--primary)',
-            color: 'var(--surface)',
-            border: '1px solid var(--primary-border)',
-            borderRadius: '4px',
-            padding: '8px 16px',
-            fontFamily: '"Geist Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace',
-            fontSize: '14px',
-            cursor: 'pointer',
-            textTransform: 'lowercase'
-          }}
-        >
+        <button onClick={() => setCount(c => c - 1)} style={btn()}>
           -1
         </button>
-
-        <button
-          onClick={reset}
-          style={{
-            backgroundColor: 'var(--primary-border)',
-            color: 'var(--surface)',
-            border: '1px solid #5a4d3a',
-            borderRadius: '4px',
-            padding: '8px 16px',
-            fontFamily: '"Geist Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace',
-            fontSize: '14px',
-            cursor: 'pointer',
-            textTransform: 'lowercase'
-          }}
-        >
+        <button onClick={() => setCount(0)} style={btn('secondary')}>
           reset
         </button>
       </div>
 
-      {/* Status */}
-      <div style={{
-        fontSize: '14px',
-        color: 'var(--subtext)',
-        fontFamily: '"Geist Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace'
-      }}>
+      <div style={{ fontSize: 14, color: 'var(--subtext)' }}>
         {count === 0 ? 'zero' : count > 0 ? 'positive' : 'negative'}
       </div>
     </div>

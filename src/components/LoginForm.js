@@ -1,148 +1,118 @@
-import React, { useMemo, useState } from 'react';
-import { useTheme } from '../context/ThemeContext';
+// src/components/LoginForm.js
+import React, { useId, useState } from 'react';
+
+function validate({ email, password }) {
+  const errors = {};
+  if (!email.includes('@')) errors.email = 'email must include "@"';
+  if (password.length < 6) errors.password = 'password must be at least 6 characters';
+  return errors;
+}
 
 export default function LoginForm() {
-  const { theme } = useTheme();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [touched, setTouched] = useState({ email: false, password: false });
+  const baseId = useId();
+  const [form, setForm] = useState({ email: '', password: '' });
+  const [touched, setTouched] = useState({}); // { email: true, password: true }
   const [success, setSuccess] = useState(false);
 
-  // simple rules per brief
-  const errors = useMemo(() => {
-    const e = {};
-    if (!email.includes('@')) e.email = 'email must include "@"';
-    if (password.length < 6) e.password = 'password must be at least 6 characters';
-    return e;
-  }, [email, password]);
+  const errors = validate(form);
+  const isValid = !errors.email && !errors.password;
 
-  const isValid = Object.keys(errors).length === 0;
+  const onChange = (e) => {
+    const { name, value } = e.target;
+    setForm((f) => ({ ...f, [name]: value }));
+    setSuccess(false);
+  };
 
-  const onSubmit = (ev) => {
-    ev.preventDefault();
-    // reveal errors if user never blurred
+  const onBlur = (e) => {
+    const { name } = e.target;
+    setTouched((t) => ({ ...t, [name]: true }));
+  };
+
+  const onSubmit = (e) => {
+    e.preventDefault();
     setTouched({ email: true, password: true });
     if (!isValid) return;
     setSuccess(true);
-    // simulate “login” success; keep fields for the lab
   };
 
-  const baseBox = {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '12px',
-    padding: '40px',
+  // styles
+  const wrap = {
+    display: 'flex', flexDirection: 'column', gap: 12, padding: 40,
+    background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8,
+    maxWidth: 420, margin: '0 auto', color: 'var(--text)', textTransform: 'lowercase',
     fontFamily: '"Geist Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace',
-    backgroundColor: 'var(--surface)',
-    border: '1px solid var(--border)',
-    borderRadius: '8px',
-    maxWidth: '420px',
-    margin: '0 auto',
-    color: 'var(--text)',
-    textTransform: 'lowercase'
   };
-
-  const inputStyle = (hasError) => ({
-    width: '100%',
-    padding: '10px 12px',
-    borderRadius: '4px',
-    border: `1px solid ${hasError ? 'var(--danger)' : 'var(--border)'}`,
-    outline: 'none',
-    backgroundColor: '#fff',
-    fontFamily: '"Geist Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace',
-    fontSize: '14px'
+  const label = { fontSize: 14, color: 'var(--text)' };
+  const input = (bad) => ({
+    width: '100%', padding: '10px 12px', borderRadius: 6,
+    border: `1px solid ${bad ? 'var(--danger)' : 'var(--border)'}`,
+    background: 'var(--bg)', color: 'var(--text)', fontSize: 14, outline: 'none',
   });
-
-  const labelStyle = { fontSize: '14px', color: 'var(--text)' };
-  const errorStyle = { fontSize: '12px', color: 'var(--danger)' };
+  const btn = (enabled = true, variant = 'primary') => ({
+    background: enabled ? (variant === 'primary' ? 'var(--primary)' : 'var(--primary-border)') : 'var(--muted)',
+    color: 'var(--primary-text)',
+    border: `1px solid ${enabled ? 'var(--primary-border)' : 'var(--muted-border)'}`,
+    borderRadius: 6, padding: '8px 16px', fontSize: 14, cursor: enabled ? 'pointer' : 'not-allowed',
+    textTransform: 'lowercase', opacity: enabled ? 1 : 0.8,
+  });
+  const err = { fontSize: 12, color: 'var(--danger)' };
 
   return (
-    <form onSubmit={onSubmit} noValidate style={baseBox}>
+    <form onSubmit={onSubmit} noValidate style={wrap}>
       <h2 style={{ margin: 0, fontWeight: 'normal' }}>login</h2>
 
       {/* email */}
-      <label htmlFor="email" style={labelStyle}>email</label>
+      <label htmlFor={`${baseId}-email`} style={label}>email</label>
       <input
-        id="email"
+        id={`${baseId}-email`}
+        name="email"
         type="email"
-        value={email}
-        onChange={(e) => { setEmail(e.target.value); setSuccess(false); }}
-        onBlur={() => setTouched((t) => ({ ...t, email: true }))}
-        aria-invalid={touched.email && !!errors.email}
-        aria-describedby={touched.email && errors.email ? 'email-error' : undefined}
+        value={form.email}
+        onChange={onChange}
+        onBlur={onBlur}
+        aria-invalid={!!(touched.email && errors.email)}
+        aria-describedby={touched.email && errors.email ? `${baseId}-email-error` : undefined}
         placeholder="name@example.com"
         autoComplete="email"
-        style={inputStyle(touched.email && !!errors.email)}
+        style={input(touched.email && errors.email)}
       />
       {touched.email && errors.email && (
-        <div id="email-error" style={errorStyle}>{errors.email}</div>
+        <div id={`${baseId}-email-error`} style={err} role="alert">{errors.email}</div>
       )}
 
       {/* password */}
-      <label htmlFor="password" style={{ ...labelStyle, marginTop: 8 }}>password</label>
+      <label htmlFor={`${baseId}-password`} style={{ ...label, marginTop: 8 }}>password</label>
       <input
-        id="password"
+        id={`${baseId}-password`}
+        name="password"
         type="password"
-        value={password}
-        onChange={(e) => { setPassword(e.target.value); setSuccess(false); }}
-        onBlur={() => setTouched((t) => ({ ...t, password: true }))}
-        aria-invalid={touched.password && !!errors.password}
-        aria-describedby={touched.password && errors.password ? 'password-error' : undefined}
+        value={form.password}
+        onChange={onChange}
+        onBlur={onBlur}
+        aria-invalid={!!(touched.password && errors.password)}
+        aria-describedby={touched.password && errors.password ? `${baseId}-password-error` : undefined}
         placeholder="••••••"
         autoComplete="current-password"
-        style={inputStyle(touched.password && !!errors.password)}
+        style={input(touched.password && errors.password)}
       />
       {touched.password && errors.password && (
-        <div id="password-error" style={errorStyle}>{errors.password}</div>
+        <div id={`${baseId}-password-error`} style={err} role="alert">{errors.password}</div>
       )}
 
       {/* actions */}
       <div style={{ display: 'flex', gap: 10, marginTop: 8 }}>
-        <button
-          type="submit"
-          disabled={!isValid}
-          style={{
-            backgroundColor: isValid ? 'var(--primary)' : 'var(--muted)',
-            color: 'var(--surface)',
-            border: `1px solid ${isValid ? 'var(--primary-border)' : 'var(--muted-border)'}`,
-            borderRadius: '4px',
-            padding: '8px 16px',
-            fontFamily: '"Geist Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace',
-            fontSize: '14px',
-            cursor: isValid ? 'pointer' : 'not-allowed',
-            textTransform: 'lowercase'
-          }}
-        >
-          sign in
-        </button>
-
+        <button type="submit" disabled={!isValid} style={btn(isValid)}>sign in</button>
         <button
           type="button"
-          onClick={() => {
-            setEmail('');
-            setPassword('');
-            setTouched({ email: false, password: false });
-            setSuccess(false);
-          }}
-          style={{
-            backgroundColor: 'var(--primary-border)',
-            color: 'var(--surface)',
-            border: '1px solid #5a4d3a',
-            borderRadius: '4px',
-            padding: '8px 16px',
-            fontFamily: '"Geist Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace',
-            fontSize: '14px',
-            cursor: 'pointer',
-            textTransform: 'lowercase'
-          }}
+          onClick={() => { setForm({ email: '', password: '' }); setTouched({}); setSuccess(false); }}
+          style={btn(true, 'secondary')}
         >
           reset
         </button>
       </div>
 
-      {/* success */}
       {success && (
-        <div style={{ marginTop: 8, fontSize: '14px', color: 'var(--success)' }}>
+        <div style={{ marginTop: 8, fontSize: 14, color: 'var(--success)' }} aria-live="polite">
           success: logged in.
         </div>
       )}

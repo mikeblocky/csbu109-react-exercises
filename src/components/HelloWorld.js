@@ -1,19 +1,21 @@
-// HelloWorld.js
+// src/components/HelloWorld.js
 import React from 'react';
-import { useTheme } from '../context/ThemeContext';
+// (theme isn't needed for plain blue, so you can remove this import)
+// import { useTheme } from '../context/ThemeContext';
 
 function HelloWorld() {
-  const { theme } = useTheme();
-
   return (
-    <h1 style={{
-      textAlign: 'center',
-      color: 'var(--primary)',
-      fontFamily: '"Geist Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace',
-      fontSize: '3rem',
-      fontWeight: 'normal',
-      textTransform: 'lowercase'
-    }}>
+    <h1
+      style={{
+        textAlign: 'center',
+        color: 'blue', // or '#1e90ff' for a nicer blue
+        fontFamily:
+          '"Geist Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New", monospace',
+        fontSize: '3rem',
+        fontWeight: 'normal',
+        textTransform: 'lowercase',
+      }}
+    >
       hello, react world!
     </h1>
   );
